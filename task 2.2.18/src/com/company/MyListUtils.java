@@ -1,10 +1,12 @@
 package com.company;
 
-import com.sun.jdi.Value;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 
 public class MyListUtils {
+
 
     /**
      * Интерфейс для доступа к начальному элементу односвязного списка
@@ -18,17 +20,7 @@ public class MyListUtils {
         public void setHead(MyListNode<T> head);
     }
 
-    /**
-     * Интерфейс для доступа к начальному элементу двусвязного списка
-     *
-     * @param <T>
-     */
-    public interface DoublyLinkedListHeadContainer<T> {
 
-        public MyDoublyLinkedListNode<T> getHead();
-
-        public void setHead(MyDoublyLinkedListNode<T> head);
-    }
 
     /**
      * Подсчет кол-ва элементов в списке
@@ -62,7 +54,7 @@ public class MyListUtils {
      * @param dummy Нужен только для того, чтобы получить реальный тип T
      * @return Массив со значениями, которые содержатся в списке
      */
-    private static <T> T[] toArrayInner(MyListNode<T> head, T... dummy) {
+    public static <T> T[] toArrayInner(MyListNode<T> head, T... dummy) {
         Class runtimeType = dummy.getClass().getComponentType();
         T[] result = (T[]) Array.newInstance(runtimeType, getSize(head));
 
@@ -70,6 +62,20 @@ public class MyListUtils {
         for (int i = 0; i < result.length; i++) {
             result[i] = node.getValue();
             node = node.getNext();
+
+        }
+        return result;
+    }
+
+    public static <T> T[] toArrayInner(MyDoublyLinkedListNode<T> head, T... dummy) {
+        Class runtimeType = dummy.getClass().getComponentType();
+        T[] result = (T[]) Array.newInstance(runtimeType, getSize(head));
+
+        MyDoublyLinkedListNode<T> node = head;
+        for (int i = 0; i < result.length; i++) {
+            result[i] = node.getValue();
+            node = node.getNext();
+
         }
         return result;
     }
@@ -83,6 +89,10 @@ public class MyListUtils {
      * @return Массив со значениями, которые содержатся в списке
      */
     public static <T> T[] toArray(MyListNode<T> head) {
+        return toArrayInner(head);
+    }
+
+    public static <T> T[] toArray(MyDoublyLinkedListNode<T> head) {
         return toArrayInner(head);
     }
 
@@ -246,6 +256,7 @@ public class MyListUtils {
         container.setHead(new MyListNode<>(value, container.getHead()));
         return container.getHead();
     }
+
 
     /**
      * Добавление элемента в конец списка
@@ -497,13 +508,14 @@ public class MyListUtils {
 
         MyDoublyLinkedListNode<T> temp = new MyDoublyLinkedListNode<>(value, node, node.getPrev());
         if (node.getPrev() != null) {
-            //(node.getPrev()).setNext(temp);
+            (node.getPrev()).setNext(temp);
         }
         node.setPrev(temp);
         (temp.getPrev()).setNext(temp);
 
         return node;
     }
+
 
     /**
      * Конвертер двусвязного списка в односвязный
@@ -532,5 +544,12 @@ public class MyListUtils {
 
     }
 
+    public static <T> void addItemEndList(MyDoublyLinkedListNode<T> tail, T value) {
+
+        tail.setNext(new MyDoublyLinkedListNode<>(value, null, tail));
+
+    }
+
 
 }
+

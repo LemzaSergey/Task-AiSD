@@ -1,0 +1,51 @@
+package com.company;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class InputArray {
+    private Errors errors;
+
+    public InputArray(String version) {
+        this.errors = new Errors(version);
+    }
+
+
+    public int checkInt(String line) throws NumberFormatException {
+        try {
+            return Integer.parseInt(line);
+        } catch (NumberFormatException e) {
+            line = errors.checkIntError(line);
+            return Integer.parseInt(line);
+        }
+    }
+
+    public String[][] toTwoDimensionalArrayString(String[] array) {
+        String[][] array2 = new String[array.length][];
+        for (int i = 0; i < array.length; i++) {
+            array2[i] = array[i].split("\\s+");
+        }
+        return array2;
+    }
+
+    public List<List<String>> toTwoDimensionalListString(String[] array) {
+
+        String[][] twoDimensionalArray = toTwoDimensionalArrayString(array);
+        return ArrayToList(twoDimensionalArray);
+    }
+
+
+    public List<List<String>> ArrayToList(String[][] array) {
+        List<String> lineList = new ArrayList<>();
+        List<List<String>> mainList = new ArrayList<>();
+        for (String[] lineArray : array) {
+            for (String s : lineArray) {
+                lineList.add(s);
+            }
+            mainList.add(lineList);
+            lineList = new ArrayList<>();
+        }
+        return mainList;
+    }
+}

@@ -4,6 +4,7 @@ import ru.vsu.cs.util.ArrayUtils;
 import ru.vsu.cs.util.JTableUtils;
 import ru.vsu.cs.util.SwingUtils;
 
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
@@ -11,28 +12,27 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+
+import com.company.QueueOwn;
+
 
 public class MainFrame extends JFrame {
-
     private InputArray inputArray = new InputArray("window");
     private WorkWithFile workWithFile = new WorkWithFile();
-    private MyDoublyLinkedListNode<Integer> head = new MyDoublyLinkedListNode<>(null, null, null);
-    private MyDoublyLinkedListNode<Integer> tail = new MyDoublyLinkedListNode<>(null, null, null);
-
-    private MyDoublyLinkedListNode<Integer> headConst;
-    private MyDoublyLinkedListNode<Integer> tailConst;
 
     private JPanel Panel;
     private JPanel mainPanel;
-    private JButton runButton;
+    private JButton runButtonJava;
+    private JButton runButtonOwn;
     private JButton saveOutputButton;
     private JButton saveInputButton;
     private JButton loadButton;
     private JButton randomButton;
     private JTable inputTable;
     private JTable outputTable;
-    private JTextField textField;
 
     public MainFrame() {
         this.setTitle("SearchPrimeNumber");
@@ -48,12 +48,9 @@ public class MainFrame extends JFrame {
         outputTable.setRowHeight(25);
 
         JTableUtils.writeArrayToJTable(inputTable, new int[][]{
-                {3, 4, 5, 6, 7, 9, 10, 11, 12, 13}
+                {4, -25, 7, -30, 80, 75, 3, -8, 15, 0, 57, -8}
 
         });
-        head = tail;
-        headConst = head;
-        tailConst = tail;
         loadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -71,9 +68,8 @@ public class MainFrame extends JFrame {
                         List<List<String>> workingListString = inputArray.toTwoDimensionalListString(workWithFile.fileToString(nameFile));
                         List<List<Integer>> workingListInteger = new ArrayList<>(converterStringToInteger(workingListString));
                         int[] workingListIntegerArr = separationPartArray(workingListInteger, 0);
-                        tail = converterIntArrToDoubleLinkedList(workingListIntegerArr);
 
-                        JTableUtils.writeArrayToJTable(inputTable, converterDoubleLinkedListToIntArr(head));
+                        JTableUtils.writeArrayToJTable(inputTable, workingListIntegerArr);
 
                     }
                 } catch (FileNotFoundException ex) {
@@ -90,7 +86,7 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    int[] arr = ArrayUtils.createRandomIntArray(inputTable.getColumnCount(), 0, 10000);
+                    int[] arr = ArrayUtils.createRandomIntArray(inputTable.getColumnCount(), -1000, 1000);
                     JTableUtils.writeArrayToJTable(inputTable, arr);
 
                 } catch (Exception e) {
@@ -135,32 +131,33 @@ public class MainFrame extends JFrame {
                 }
             }
         });
-
-        runButton.addActionListener(new ActionListener() {
+        runButtonOwn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     int[] workingArr = JTableUtils.readIntArrayFromJTable(inputTable);
-                    tail = converterIntArrToDoubleLinkedList(workingArr);
-                    int count = 0;
 
-                    head = head.getNext();
-                    for (MyDoublyLinkedListNode<Integer> curr = head; curr != null; curr = curr.getNext()) {
-                        if (LogicWork.simple(head.getValue())) {
-                            count++;
-                            head = LogicWork.insertItemBeforeAndAfter(head, 0);
-                        }
-                        head = head.getNext();
-                    }
+                    QueueOwn<Integer> queueOwn = converterIntArrToQueueOwn(workingArr);
+                    queueOwn = LogicWorkOwn.sortingWithConservationOrder(queueOwn);
 
-                    if (count > 0) {
-                        textField.setText("Количество простых чисел: " + count);
-                    } else {
-                        textField.setText("Простых чисел в списке нет");
-                    }
-                    tail = tailConst;
-                    head = headConst;
-                    JTableUtils.writeArrayToJTable(outputTable, converterDoubleLinkedListToIntArr(head));
+                    JTableUtils.writeArrayToJTable(outputTable, converterQueueOwnToIntArr(queueOwn));
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Ошибка! Проверьте правильность введённых данных", "Output", JOptionPane.PLAIN_MESSAGE);
+                }
+                /*} catch (Exception e) {
+                    SwingUtils.showErrorMessageBox(e);*/
+            }
+        });
+        runButtonJava.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    int[] workingArr = JTableUtils.readIntArrayFromJTable(inputTable);
+
+                    Queue<Integer> queue = converterIntArrToQueueJava(workingArr);
+                    queue = LogicWorkJava.sortingWithConservationOrder(queue);
+
+                    JTableUtils.writeArrayToJTable(outputTable, converterQueueJavaToIntArr(queue));
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, "Ошибка! Проверьте правильность введённых данных", "Output", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -184,32 +181,6 @@ public class MainFrame extends JFrame {
         return newList;
     }
 
-
-    public MyDoublyLinkedListNode<Integer> converterIntArrToDoubleLinkedList(int[] ints) {
-        for (int i = 0; i < ints.length; i++) {
-
-            MyListUtils.addItemEndList(tail, ints[i]);
-            tail = tail.getNext();
-        }
-        tail = tailConst;
-        return tail;
-    }
-
-    public int[] converterDoubleLinkedListToIntArr(MyDoublyLinkedListNode<Integer> head) {
-
-        int[] result = new int[MyListUtils.getSize(head) - 1];
-        int i = 0;
-
-        head = head.getNext();
-        for (MyDoublyLinkedListNode<Integer> curr = head; curr != null; curr = curr.getNext()) {
-
-            result[i] = head.getValue();
-            i++;
-            head = head.getNext();
-        }
-        return result;
-    }
-
     public int[] separationPartArray(List<List<Integer>> IntegerArr, int num) {
 
         if (Errors.workingListIntegerRedundant(IntegerArr)) {
@@ -222,6 +193,46 @@ public class MainFrame extends JFrame {
         }
         return listIntegerArr;
     }
-}
 
+    public int[] converterQueueOwnToIntArr(QueueOwn<Integer> queue) throws Exception {
+        int[] ints = new int[queue.getCount()];
+        for (int i = 0; queue.getCount() > 0; i++) {
+            ints[i] = queue.get();
+        }
+
+        return ints;
+    }
+
+    public int[] converterQueueJavaToIntArr(Queue<Integer> queue) throws Exception {
+
+        List<Integer> lists = new ArrayList<>();
+
+        while (queue.peek() != null) {
+            lists.add(queue.poll());
+        }
+        int[] ints = new int[lists.size()];
+        for (int i = 0; i < lists.size(); i++) {
+            ints[i] = lists.get(i);
+        }
+
+        return ints;
+    }
+
+    public QueueOwn<Integer> converterIntArrToQueueOwn(int[] ints) {
+        QueueOwn<Integer> queue = new QueueOwn<Integer>();
+        for (int i = 0; i < ints.length; i++) {
+            queue.add(ints[i]);
+        }
+        return queue;
+    }
+
+    public Queue<Integer> converterIntArrToQueueJava(int[] ints) {
+        Queue<Integer> queue = new LinkedList<Integer>();
+        for (int i = 0; i < ints.length; i++) {
+            queue.add(ints[i]);
+        }
+        return queue;
+    }
+
+}
 

@@ -1,6 +1,8 @@
 package com.company;
 
+
 public class LogicWork {
+
     public static <T> MyDoublyLinkedListNode<T> insertItemBeforeAndAfter(MyDoublyLinkedListNode<T> node, T value) {
         //insertBefore перед
         MyDoublyLinkedListNode<T> temp = new MyDoublyLinkedListNode<>(value, node, node.getPrev());
@@ -48,4 +50,5 @@ public class LogicWork {
         } else return true;
 
     }
+
 }

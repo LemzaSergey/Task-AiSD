@@ -3,7 +3,6 @@ package com.company;
 // вставить новые элементы со значением 0.
 
 
-
 public class Main {
 
     public static void main(String[] args) {

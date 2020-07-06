@@ -12,11 +12,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.LinkedList;
+
 import java.util.List;
 import java.util.Queue;
-
-import com.company.QueueOwn;
 
 
 public class MainFrame extends JFrame {
@@ -35,7 +33,7 @@ public class MainFrame extends JFrame {
     private JTable outputTable;
 
     public MainFrame() {
-        this.setTitle("SearchPrimeNumber");
+        this.setTitle("SortElement");
         this.setContentPane(mainPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -67,7 +65,7 @@ public class MainFrame extends JFrame {
 
                         List<List<String>> workingListString = inputArray.toTwoDimensionalListString(workWithFile.fileToString(nameFile));
                         List<List<Integer>> workingListInteger = new ArrayList<>(converterStringToInteger(workingListString));
-                        int[] workingListIntegerArr = separationPartArray(workingListInteger, 0);
+                        int[] workingListIntegerArr = InputArray.separationPartArray(workingListInteger, 0);
 
                         JTableUtils.writeArrayToJTable(inputTable, workingListIntegerArr);
 
@@ -137,10 +135,10 @@ public class MainFrame extends JFrame {
                 try {
                     int[] workingArr = JTableUtils.readIntArrayFromJTable(inputTable);
 
-                    QueueOwn<Integer> queueOwn = converterIntArrToQueueOwn(workingArr);
+                    QueueOwn<Integer> queueOwn = LogicWorkOwn.converterIntArrToQueueOwn(workingArr);
                     queueOwn = LogicWorkOwn.sortingWithConservationOrder(queueOwn);
 
-                    JTableUtils.writeArrayToJTable(outputTable, converterQueueOwnToIntArr(queueOwn));
+                    JTableUtils.writeArrayToJTable(outputTable, LogicWorkOwn.converterQueueOwnToIntArr(queueOwn));
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, "Ошибка! Проверьте правильность введённых данных", "Output", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -154,10 +152,10 @@ public class MainFrame extends JFrame {
                 try {
                     int[] workingArr = JTableUtils.readIntArrayFromJTable(inputTable);
 
-                    Queue<Integer> queue = converterIntArrToQueueJava(workingArr);
+                    Queue<Integer> queue = LogicWorkJava.converterIntArrToQueueJava(workingArr);
                     queue = LogicWorkJava.sortingWithConservationOrder(queue);
 
-                    JTableUtils.writeArrayToJTable(outputTable, converterQueueJavaToIntArr(queue));
+                    JTableUtils.writeArrayToJTable(outputTable, LogicWorkJava.converterQueueJavaToIntArr(queue));
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, "Ошибка! Проверьте правильность введённых данных", "Output", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -165,6 +163,7 @@ public class MainFrame extends JFrame {
                     SwingUtils.showErrorMessageBox(e);*/
             }
         });
+
 
     }
 
@@ -181,58 +180,6 @@ public class MainFrame extends JFrame {
         return newList;
     }
 
-    public int[] separationPartArray(List<List<Integer>> IntegerArr, int num) {
-
-        if (Errors.workingListIntegerRedundant(IntegerArr)) {
-            return new int[]{};
-        }
-
-        int[] listIntegerArr = new int[IntegerArr.get(num).size()];
-        for (int i = 0; i < IntegerArr.get(num).size(); i++) {
-            listIntegerArr[i] = IntegerArr.get(num).get(i);
-        }
-        return listIntegerArr;
-    }
-
-    public int[] converterQueueOwnToIntArr(QueueOwn<Integer> queue) throws Exception {
-        int[] ints = new int[queue.getCount()];
-        for (int i = 0; queue.getCount() > 0; i++) {
-            ints[i] = queue.get();
-        }
-
-        return ints;
-    }
-
-    public int[] converterQueueJavaToIntArr(Queue<Integer> queue) throws Exception {
-
-        List<Integer> lists = new ArrayList<>();
-
-        while (queue.peek() != null) {
-            lists.add(queue.poll());
-        }
-        int[] ints = new int[lists.size()];
-        for (int i = 0; i < lists.size(); i++) {
-            ints[i] = lists.get(i);
-        }
-
-        return ints;
-    }
-
-    public QueueOwn<Integer> converterIntArrToQueueOwn(int[] ints) {
-        QueueOwn<Integer> queue = new QueueOwn<Integer>();
-        for (int i = 0; i < ints.length; i++) {
-            queue.add(ints[i]);
-        }
-        return queue;
-    }
-
-    public Queue<Integer> converterIntArrToQueueJava(int[] ints) {
-        Queue<Integer> queue = new LinkedList<Integer>();
-        for (int i = 0; i < ints.length; i++) {
-            queue.add(ints[i]);
-        }
-        return queue;
-    }
 
 }
 

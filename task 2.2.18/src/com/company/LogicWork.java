@@ -28,9 +28,10 @@ public class LogicWork {
     }
 
 
-
     public static boolean simple(int a) {
-        if(a<=1){return false;}
+        if (a <= 1) {
+            return false;
+        }
         if ((a == 2) || (a == 3) || (a == 5) || (a == 7)) {
             return true;
         }

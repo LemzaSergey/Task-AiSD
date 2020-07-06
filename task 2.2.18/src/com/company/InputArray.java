@@ -48,4 +48,32 @@ public class InputArray {
         }
         return mainList;
     }
+
+    public static int[] separationPartArray(List<List<Integer>> IntegerArr, int num) {
+
+        if (Errors.workingListIntegerRedundant(IntegerArr)) {
+            return new int[]{};
+        }
+
+        int[] listIntegerArr = new int[IntegerArr.get(num).size()];
+        for (int i = 0; i < IntegerArr.get(num).size(); i++) {
+            listIntegerArr[i] = IntegerArr.get(num).get(i);
+        }
+        return listIntegerArr;
+    }
+
+    public static int[] converterDoubleLinkedListToIntArr(MyDoublyLinkedListNode<Integer> head) {
+
+        int[] result = new int[MyListUtils.getSize(head) - 1];
+        int i = 0;
+
+        head = head.getNext();
+        for (MyDoublyLinkedListNode<Integer> curr = head; curr != null; curr = curr.getNext()) {
+
+            result[i] = head.getValue();
+            i++;
+            head = head.getNext();
+        }
+        return result;
+    }
 }

@@ -70,10 +70,10 @@ public class MainFrame extends JFrame {
 
                         List<List<String>> workingListString = inputArray.toTwoDimensionalListString(workWithFile.fileToString(nameFile));
                         List<List<Integer>> workingListInteger = new ArrayList<>(converterStringToInteger(workingListString));
-                        int[] workingListIntegerArr = separationPartArray(workingListInteger, 0);
+                        int[] workingListIntegerArr = InputArray.separationPartArray(workingListInteger, 0);
                         tail = converterIntArrToDoubleLinkedList(workingListIntegerArr);
 
-                        JTableUtils.writeArrayToJTable(inputTable, converterDoubleLinkedListToIntArr(head));
+                        JTableUtils.writeArrayToJTable(inputTable, InputArray.converterDoubleLinkedListToIntArr(head));
 
                     }
                 } catch (FileNotFoundException ex) {
@@ -160,7 +160,7 @@ public class MainFrame extends JFrame {
                     }
                     tail = tailConst;
                     head = headConst;
-                    JTableUtils.writeArrayToJTable(outputTable, converterDoubleLinkedListToIntArr(head));
+                    JTableUtils.writeArrayToJTable(outputTable, InputArray.converterDoubleLinkedListToIntArr(head));
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, "Ошибка! Проверьте правильность введённых данных", "Output", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -195,33 +195,7 @@ public class MainFrame extends JFrame {
         return tail;
     }
 
-    public int[] converterDoubleLinkedListToIntArr(MyDoublyLinkedListNode<Integer> head) {
 
-        int[] result = new int[MyListUtils.getSize(head) - 1];
-        int i = 0;
-
-        head = head.getNext();
-        for (MyDoublyLinkedListNode<Integer> curr = head; curr != null; curr = curr.getNext()) {
-
-            result[i] = head.getValue();
-            i++;
-            head = head.getNext();
-        }
-        return result;
-    }
-
-    public int[] separationPartArray(List<List<Integer>> IntegerArr, int num) {
-
-        if (Errors.workingListIntegerRedundant(IntegerArr)) {
-            return new int[]{};
-        }
-
-        int[] listIntegerArr = new int[IntegerArr.get(num).size()];
-        for (int i = 0; i < IntegerArr.get(num).size(); i++) {
-            listIntegerArr[i] = IntegerArr.get(num).get(i);
-        }
-        return listIntegerArr;
-    }
 }
 
 

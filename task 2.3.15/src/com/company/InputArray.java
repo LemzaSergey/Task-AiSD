@@ -48,4 +48,19 @@ public class InputArray {
         }
         return mainList;
     }
+
+    public static int[] separationPartArray(List<List<Integer>> IntegerArr, int num) {
+
+        if (Errors.workingListIntegerRedundant(IntegerArr)) {
+            return new int[]{};
+        }
+
+        int[] listIntegerArr = new int[IntegerArr.get(num).size()];
+        for (int i = 0; i < IntegerArr.get(num).size(); i++) {
+            listIntegerArr[i] = IntegerArr.get(num).get(i);
+        }
+        return listIntegerArr;
+    }
+
+
 }

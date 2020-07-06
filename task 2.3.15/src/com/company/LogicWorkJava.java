@@ -1,6 +1,8 @@
 package com.company;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class LogicWorkJava {
@@ -36,5 +38,26 @@ public class LogicWorkJava {
         }
 
         return queue;
+    }
+    public static Queue<Integer> converterIntArrToQueueJava(int[] ints) {
+        Queue<Integer> queue = new LinkedList<Integer>();
+        for (int i = 0; i < ints.length; i++) {
+            queue.add(ints[i]);
+        }
+        return queue;
+    }
+    public static int[] converterQueueJavaToIntArr(Queue<Integer> queue) throws Exception {
+
+        List<Integer> lists = new ArrayList<>();
+
+        while (queue.peek() != null) {
+            lists.add(queue.poll());
+        }
+        int[] ints = new int[lists.size()];
+        for (int i = 0; i < lists.size(); i++) {
+            ints[i] = lists.get(i);
+        }
+
+        return ints;
     }
 }

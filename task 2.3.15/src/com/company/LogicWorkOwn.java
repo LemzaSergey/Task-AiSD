@@ -36,5 +36,19 @@ public class LogicWorkOwn {
 
         return queue;
     }
+    public static QueueOwn<Integer> converterIntArrToQueueOwn(int[] ints) {
+        QueueOwn<Integer> queue = new QueueOwn<Integer>();
+        for (int i = 0; i < ints.length; i++) {
+            queue.add(ints[i]);
+        }
+        return queue;
+    }
+    public static int[] converterQueueOwnToIntArr(QueueOwn<Integer> queue) throws Exception {
+        int[] ints = new int[queue.getCount()];
+        for (int i = 0; queue.getCount() > 0; i++) {
+            ints[i] = queue.get();
+        }
 
+        return ints;
+    }
 }

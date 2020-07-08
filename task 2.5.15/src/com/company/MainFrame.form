@@ -51,7 +51,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="Найти максимальный элемент дерева"/>
+              <text value="Самый часто встречаемый элемент дерева"/>
             </properties>
           </component>
           <component id="13df5" class="javax.swing.JTextField" binding="textField1" default-binding="true">
